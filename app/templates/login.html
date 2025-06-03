@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+  <h1>Login</h1>
+  <a class="btn btn-danger" href="{{ url_for('google.login') }}">Mit Google anmelden</a>
+{% endblock %}

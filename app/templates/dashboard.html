@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+  <h1>Willkommen, {{ current_user.email }}</h1>
+  <a class="btn btn-secondary" href="{{ url_for('main.logout') }}">Logout</a>
+
+  <h2>Bild hochladen</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <input type="file" name="image" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <textarea name="description" placeholder="Beschreibung" class="form-control" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Hochladen</button>
+  </form>
+
+  <h2 class="mt-5">Alle Bilder</h2>
+  {% for img in images %}
+    <div class="card mt-3">
+      <img src="{{ url_for('static', filename='uploads/' ~ img.filename) }}" class="card-img-top" alt="Bild">
+      <div class="card-body">
+        <p>{{ img.description }}</p>
+        <p>Von: {{ img.user_id }}</p>
+        {% if img.user_id == current_user.id %}
+          <a href="{{ url_for('main.delete', image_id=img.id) }}" class="btn btn-danger">Löschen</a>
+        {% endif %}
+        <form method="POST" action="{{ url_for('main.comment', image_id=img.id) }}" class="mt-2">
+          <input name="comment" class="form-control" placeholder="Kommentieren..." required>
+          <button class="btn btn-sm btn-outline-primary mt-1">Posten</button>
+        </form>
+        <div class="mt-2">
+          {% for c in img.comment_set %}
+            <p><strong>{{ c.user_id }}:</strong> {{ c.text }}</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}
