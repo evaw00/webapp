@@ -5,10 +5,12 @@ from flask_login import LoginManager
 from flask_dance.contrib.google import make_google_blueprint, google
 from flask_wtf.csrf import CSRFProtect
 from dotenv import load_dotenv
+from flask_migrate import Migrate      # ➊  NEU
 
 db = SQLAlchemy()
 login_manager = LoginManager()
 csrf = CSRFProtect()
+migrate = Migrate()                    # ➋  NEU
 
 def create_app():
     load_dotenv()
@@ -18,6 +20,7 @@ def create_app():
     db.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
+    migrate.init_app(app, db)          # ➌  NEU  – erst danach stehen die „flask db“-Befehle bereit
 
     from app.models import User
 
@@ -37,3 +40,4 @@ def create_app():
     app.register_blueprint(main)
 
     return app
+
